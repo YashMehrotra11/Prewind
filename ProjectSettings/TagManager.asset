@@ -5,14 +5,15 @@ TagManager:
   serializedVersion: 2
   tags:
   - Exit
+  - Collision
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
+  - Collision
   - 
   - 
   - 

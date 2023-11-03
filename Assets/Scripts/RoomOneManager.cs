@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
-public class GameManager : MonoBehaviour
+public class RoomOneManager : MonoBehaviour
 {
-    public GameObject pastTileset;
-    public GameObject presentTileset;
-    public GameObject futureTileset;
-
     public TextMeshProUGUI pastText;
     public TextMeshProUGUI presentText;
     public TextMeshProUGUI futureText;
 
     public TextMeshProUGUI hint;
-    public GameObject exit;
 
-    public static GameManager Instance;
+    public Transform cameraTransform;
+    public Transform playerTransform;
+
+    public static RoomOneManager Instance;
     private void Awake()
     {
         if (Instance != this)
@@ -53,44 +52,38 @@ public class GameManager : MonoBehaviour
 
     private void Past()
     {
-        pastTileset.SetActive(true);
-        presentTileset.SetActive(false);
-        futureTileset.SetActive(false);
-
         pastText.color = Color.white;
         presentText.color = Color.grey;
         futureText.color = Color.gray;
 
         hint.gameObject.SetActive(false);
-        exit.SetActive(true);
+
+        playerTransform.position = new Vector2(-20, 0.5f);
+        cameraTransform.position = new Vector3(-20, cameraTransform.position.y, cameraTransform.position.z);
     }
 
     private void Present()
     {
-        pastTileset.SetActive(false);
-        presentTileset.SetActive(true);
-        futureTileset.SetActive(false);
-
         pastText.color = Color.gray;
         presentText.color = Color.white;
         futureText.color = Color.gray;
 
         hint.gameObject.SetActive(true);
-        exit.SetActive(false);
+
+        playerTransform.position = new Vector2(0, 0.5f);
+        cameraTransform.position = new Vector3(0, cameraTransform.position.y, cameraTransform.position.z);
     }
 
     private void Future()
     {
-        pastTileset.SetActive(false);
-        presentTileset.SetActive(false);
-        futureTileset.SetActive(true);
-
         pastText.color = Color.gray;
         presentText.color = Color.gray;
         futureText.color = Color.white;
 
         hint.gameObject.SetActive(true);
-        exit.SetActive(false);
+
+        playerTransform.position = new Vector2(20, 0.5f);
+        cameraTransform.position = new Vector3(20, cameraTransform.position.y, cameraTransform.position.z);
     }
 
     public void Rewind()
