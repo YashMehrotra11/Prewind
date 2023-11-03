@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GridMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     private bool isMoving;
     private Vector3 originalPos, targetPos;
@@ -54,5 +54,13 @@ public class GridMovement : MonoBehaviour
 
         transform.position = targetPos;
         isMoving = false;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Exit"))
+        {
+            GameManager.Instance.Rewind();
+        }
     }
 }
