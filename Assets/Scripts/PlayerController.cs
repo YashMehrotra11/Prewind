@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,19 +17,19 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.W))
             {
-                if(CanMove(Vector3.up))StartCoroutine(MovePlayer(Vector3.up));
+                if(CanMove(Vector3.up))StartCoroutine(Move(Vector3.up));
             }
             if (Input.GetKey(KeyCode.A))
             {
-                if (CanMove(Vector3.left)) StartCoroutine(MovePlayer(Vector3.left));
+                if (CanMove(Vector3.left)) StartCoroutine(Move(Vector3.left));
             }
             if (Input.GetKey(KeyCode.S))
             {
-                if (CanMove(Vector3.down)) StartCoroutine(MovePlayer(Vector3.down));
+                if (CanMove(Vector3.down)) StartCoroutine(Move(Vector3.down));
             }
             if (Input.GetKey(KeyCode.D))
             {
-                if (CanMove(Vector3.right)) StartCoroutine(MovePlayer(Vector3.right));
+                if (CanMove(Vector3.right)) StartCoroutine(Move(Vector3.right));
             }
         }
     }
@@ -37,20 +37,32 @@ public class PlayerController : MonoBehaviour
     private bool CanMove(Vector3 direction)
     {
         Vector2 playerPosition = transform.position;
-
         RaycastHit2D hit = Physics2D.Raycast(playerPosition, direction, direction.magnitude, collisionLayer);
+        Debug.DrawRay(playerPosition, direction, Color.green);
 
-        if (hit.collider != null && hit.collider.CompareTag("Collision")) // Change the tag to match your Tilemap colliders
+        if (hit.collider != null)
         {
-            Debug.Log("Boundary hit!");
-            Debug.DrawRay(playerPosition, direction, Color.green);
-            return false;
+            if (hit.collider.CompareTag("Collision"))
+            {
+                return false;
+            }
+            else if (hit.collider.CompareTag("Moveable"))
+            {
+                if(hit.collider.gameObject.GetComponent<MoveableController>().CanMove(direction, collisionLayer))
+                {
+                    hit.collider.gameObject.GetComponent<MoveableController>().StartMove(direction);
+                }
+                else
+                {
+                    return false;
+                }
+            }
         }
 
         return true;
     }
 
-    private IEnumerator MovePlayer(Vector3 direction)
+    private IEnumerator Move(Vector3 direction)
     {
         isMoving = true;
 
@@ -74,7 +86,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Exit"))
         {
-            RoomOneManager.Instance.Rewind();
+            RoomManager.Instance.Exit();
         }
     }
 }

@@ -5,18 +5,20 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 
-public class RoomOneManager : MonoBehaviour
+public class RoomManager : MonoBehaviour
 {
     public TextMeshProUGUI pastText;
     public TextMeshProUGUI presentText;
     public TextMeshProUGUI futureText;
 
-    public TextMeshProUGUI hint;
+    public TextMeshProUGUI pastHintText;
+    public TextMeshProUGUI presentHintText;
+    public TextMeshProUGUI futureHintText;
 
     public Transform cameraTransform;
     public Transform playerTransform;
 
-    public static RoomOneManager Instance;
+    public static RoomManager Instance;
     private void Awake()
     {
         if (Instance != this)
@@ -56,10 +58,13 @@ public class RoomOneManager : MonoBehaviour
         presentText.color = Color.grey;
         futureText.color = Color.gray;
 
-        hint.gameObject.SetActive(false);
+        pastHintText.gameObject.SetActive(true);
+        presentHintText.gameObject.SetActive(false);
+        futureHintText.gameObject.SetActive(false);
 
-        playerTransform.position = new Vector2(-20, 0.5f);
+        Vector3 playerOffset = playerTransform.position - cameraTransform.position;
         cameraTransform.position = new Vector3(-20, cameraTransform.position.y, cameraTransform.position.z);
+        playerTransform.position = cameraTransform.position + playerOffset;
     }
 
     private void Present()
@@ -68,10 +73,13 @@ public class RoomOneManager : MonoBehaviour
         presentText.color = Color.white;
         futureText.color = Color.gray;
 
-        hint.gameObject.SetActive(true);
+        pastHintText.gameObject.SetActive(false);
+        presentHintText.gameObject.SetActive(true);
+        futureHintText.gameObject.SetActive(false);
 
-        playerTransform.position = new Vector2(0, 0.5f);
+        Vector3 playerOffset = playerTransform.position - cameraTransform.position;
         cameraTransform.position = new Vector3(0, cameraTransform.position.y, cameraTransform.position.z);
+        playerTransform.position = cameraTransform.position + playerOffset;
     }
 
     private void Future()
@@ -80,14 +88,22 @@ public class RoomOneManager : MonoBehaviour
         presentText.color = Color.gray;
         futureText.color = Color.white;
 
-        hint.gameObject.SetActive(true);
+        pastHintText.gameObject.SetActive(false);
+        presentHintText.gameObject.SetActive(false);
+        futureHintText.gameObject.SetActive(true);
 
-        playerTransform.position = new Vector2(20, 0.5f);
+        Vector3 playerOffset = playerTransform.position - cameraTransform.position;
         cameraTransform.position = new Vector3(20, cameraTransform.position.y, cameraTransform.position.z);
+        playerTransform.position = cameraTransform.position + playerOffset;
     }
 
     public void Rewind()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void Exit()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
 }
